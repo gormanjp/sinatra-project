@@ -1,0 +1,12 @@
+<h2>Welcome <%=@user.username%></h2>
+
+<% @user.lists.each do |list| %>
+<a href="/lists/<%=list.id%>"><%=list.name%></a><br>
+<% end %>
+
+
+<h3>Navigation</h3>
+<a href="/home">Home</a><br>
+<a href="/lists/new">New List</a><br>
+<a href="/logout">Log Out</a><br>
+

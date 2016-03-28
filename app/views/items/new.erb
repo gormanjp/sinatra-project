@@ -1,0 +1,10 @@
+<h3><%=@list.name%></h3>
+<h3>New Item</h3>
+<form action="/items/<%=@list.id%>/new" method="POST">
+	<input type="text" name="content" id="name" value="List Item"><br>
+	How many times this week? <br>
+	<input type="number" name="frequency"><br>
+	<input type="submit" name="submit"	id="submit" value="Add Item">
+</form>
+<br><br><br><br><br><br><br>
+<a href="/home">Home</a><br><a href="/logout">Log Out</a><br>
