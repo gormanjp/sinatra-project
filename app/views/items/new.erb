@@ -1,10 +1,20 @@
-<h3><%=@list.name%></h3>
-<h3>New Item</h3>
-<form action="/items/<%=@list.id%>/new" method="POST">
-	<input type="text" name="content" id="name" value="List Item"><br>
-	How many times this week? <br>
-	<input type="number" name="frequency"><br>
-	<input type="submit" name="submit"	id="submit" value="Add Item">
-</form>
-<br><br><br><br><br><br><br>
-<a href="/home">Home</a><br><a href="/logout">Log Out</a><br>
+<head><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<nav class="navbar navbar-default">
+ <a class="navbar-brand" href="/home">ToDO</a>
+	<ul class="nav navbar-nav">
+	 	<li><a href="/lists/new">New List</a></li>
+	 </ul>
+	 <ul class="nav navbar-nav navbar-right">
+	 	<li><a href="/logout">Log Out  </a></li>
+	 </ul>
+</nav>
+<div class="container">
+	<h3><%=@list.name%></h3>
+	<form action="/items/<%=@list.id%>/new" method="POST">
+		<input type="text" name="content" id="name" value="New Item"><br>
+		How many times? <br>
+		<input type="number" name="frequency"><br><br>
+		<input class="btn btn-success" type="submit" name="submit"	id="submit" value="Add Item">
+	</form>
+</div>

@@ -105,10 +105,24 @@ class ApplicationController < Sinatra::Base
   get '/lists/:id' do
   	if Helpers.is_logged_in?(session)
   		@list = List.find_by(:id => params[:id])
-  		erb :'lists/show'
+  		 erb :'lists/show'
   	else
   		redirect '/login'
   	end
+  end
+
+  post '/lists/items/:id' do 
+    @item = Item.find(params[:id])
+    @list = List.find(@item.list_id)
+    i = 0 
+    params.each do |k,v|
+      if v == "on"
+        i += 1
+      end
+    end
+    @item.checks = i
+    @item.save
+    erb :'lists/show'
   end
 
   #Edit List
@@ -157,7 +171,7 @@ class ApplicationController < Sinatra::Base
   post '/items/:id/new' do 
     if params[:content] != "" && params[:frequency] != 0
       @list = List.find_by(:id => params[:id])
-      @item = Item.create(:content => params[:content], :frequency => params[:frequency])
+      @item = Item.create(:content => params[:content], :frequency => params[:frequency], :checks => 0)
       #binding.pry
       @list.items << @item
       redirect "/lists/#{@list.id}"

@@ -1,17 +1,30 @@
+<head><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+</head>
+<nav class="navbar navbar-default">
+ <a class="navbar-brand" href="/home">ToDO</a>
+	<ul class="nav navbar-nav">
+	 	<li><a href="/lists/new">New List</a></li>
+	 </ul>
+	 <ul class="nav navbar-nav navbar-right">
+	 	<li><a href="/logout">Log Out  </a></li>
+	 </ul>
+</nav>
+<div class="container">
 <h3><%= @list.name %></h3>
+	
+		<p>
+		<% @list.items.each do |item|%>
+			<form action="/lists/items/<%=item.id%>" method="POST">
+			<%= item.content %>
+			<% item.frequency.times do |i|%>
+				<input type="checkbox" name=<%=i+1%> <%= 'checked' if (i+1)<=item.checks %> >
+			<% end %>
+			<input type="submit" name="submit" id="submit" value="Save">
+			</form>
+			<br>
+		<% end %>
+		</p>
 
-
-<p><% @list.items.each do |item|%>
-	<%= item.content %>
-	<% item.frequency.times do %>
-		<input type="checkbox">
-	<% end %>
-
-	<br>
-<% end %></p>
-
-<a href="/lists/<%=@list.id%>/edit">Edit List</a><br>
-<h3>Navigation</h3>
-<a href="/home">Home</a><br>
-<a href="/lists/new">New List</a><br>
-<a href="/logout">Log Out</a><br>
+<a href="/items/<%=@list.id%>/new">Add Items</a><br>
+<a href="/lists/<%=@list.id%>/edit">Edit List Title</a><br>
+</div>
