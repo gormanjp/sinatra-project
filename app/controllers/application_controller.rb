@@ -22,18 +22,26 @@ class ApplicationController < Sinatra::Base
   	if Helpers.is_logged_in?(session)
   		redirect '/home'
   	else
-  		erb :'users/signup'
+  		erb :'users/signup', :locals => {:message => 'message'}
   	end
   end
 
   post '/signup' do 
-  	@user = User.create(:username => params[:username], :password => params[:password])
-  	@user.save
-  	session[:id] = @user[:id]
-  	if @user.save && !params[:username].empty? && !params[:password].empty?
-  		redirect '/home'
-  	else
-  		erb :'users/signup', locals: {message:"error"}
+    if params[:username] == 'Username' || params[:password] == 'password'
+       erb :'users/signup', :locals => {:message => 'error'}
+    elsif User.find_by(:username => params[:username])
+      erb :'users/signup', :locals => {:message => 'same'}
+    elsif params[:username].empty? || params[:password].empty?
+      erb :'users/signup', :locals => {:message => 'empty'}
+    else
+    	@user = User.create(:username => params[:username], :password => params[:password])
+    	@user.save
+    	session[:id] = @user[:id]
+      if @user.save
+        redirect '/home'
+      else
+  		  erb :'users/signup', :locals => {:message => 'message'}
+      end
   	end
   end
 
@@ -42,7 +50,7 @@ class ApplicationController < Sinatra::Base
   	if Helpers.is_logged_in?(session)
   		redirect '/home'
   	else
-		erb :'users/login'
+		erb :'users/login', :locals => {:message => 'message'}
 	end
   end
 
@@ -59,7 +67,7 @@ class ApplicationController < Sinatra::Base
   #Log Out
   get '/logout' do 
   	session.clear
-  	erb :'users/login', locals: {message:"success"}
+  	erb :'users/login', :locals => {:message => 'success'}
   end
 
   #Home Page - shows user lists
@@ -83,20 +91,20 @@ class ApplicationController < Sinatra::Base
   get '/lists/new' do 
   	if Helpers.is_logged_in?(session)
 	  	@user = User.find_by_id(session[:id])
-  		erb :'lists/new'
+  		erb :'lists/new', :locals => {:message => 'message'}
   	else
   		redirect '/login'
   	end
   end
 
   post '/lists/new' do 
-  	if params[:name] != "" 
+  	if !params[:name].empty?
   		@list = List.create(:name => params[:name])
   		@user = User.find_by_id(session[:id])
   		@user.lists << @list
   		redirect "/lists/#{@list.id}"
   	else
-  		redirect '/lists/new'#ADD VALIDATION
+  		erb :'lists/new', :locals => {:message => 'error'}
   	end
   end	
 
@@ -143,7 +151,7 @@ class ApplicationController < Sinatra::Base
   		@list.save
   		redirect "/lists/#{@list.id}"
   	else
-  		erb :'lists/edit', locals: {message: "Successfully created song."}
+  		erb :'lists/edit'
   	end
   end
 
@@ -161,7 +169,7 @@ class ApplicationController < Sinatra::Base
    if Helpers.is_logged_in?(session)
       @user = User.find_by_id(session[:id])
       @list = List.find_by(:id => params[:id])
-      erb :'items/new'
+      erb :'items/new', :locals => {:message => 'message'}
     else
       redirect '/login'
     end
@@ -171,11 +179,12 @@ class ApplicationController < Sinatra::Base
     if params[:content] != "" && params[:frequency] != 0
       @list = List.find_by(:id => params[:id])
       @item = Item.create(:content => params[:content], :frequency => params[:frequency], :checks => 0)
-      #binding.pry
       @list.items << @item
       redirect "/lists/#{@list.id}"
     else
-      redirect "/items/#{@list.id}/new"
+      @user = User.find_by_id(session[:id])
+      @list = List.find_by(:id => params[:id])
+      erb :'items/new', :locals => {:message => 'error'}
     end
   end
 

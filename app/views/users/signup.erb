@@ -2,9 +2,21 @@
 </head>
 
 <div class="container">
-<% unless locals.empty? %>
+<% if message == 'empty' %>
   <div class="alert alert-danger">
-  <strong>Try Again!</strong> All forms must be filled in.
+  <strong>Try Again!</strong> Username and password must be filled in.
+</div>
+<% end %>
+
+<% if message == 'error' %>
+  <div class="alert alert-danger">
+  <strong>Try Again!</strong> Username cannot be Username
+</div>
+<% end %>
+
+<% if message == 'same' %>
+  <div class="alert alert-danger">
+  <strong>Try Again!</strong> Username already taken.
 </div>
 <% end %>
 

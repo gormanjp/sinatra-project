@@ -2,9 +2,9 @@
 </head>
 
 <div class="container">
-<% unless message:'error' %>
-  <div class="alert alert-danger">
-  <strong>Try Again!</strong> Username or password invalid
+<% if message == 'success' %>
+  <div class="alert alert-success">
+  You have successfully logged out of your account.
 </div>
 <% end %>
 <h1>Log In</h1>
