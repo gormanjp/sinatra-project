@@ -2,6 +2,11 @@
 </head>
 
 <div class="container">
+<% unless message:'error' %>
+  <div class="alert alert-danger">
+  <strong>Try Again!</strong> Username or password invalid
+</div>
+<% end %>
 <h1>Log In</h1>
 	<form  action="/login" method="post">
 		<input type="text" name="username" id="username" value="Username">

@@ -30,11 +30,10 @@ class ApplicationController < Sinatra::Base
   	@user = User.create(:username => params[:username], :password => params[:password])
   	@user.save
   	session[:id] = @user[:id]
-    #Add form validation here!
   	if @user.save && !params[:username].empty? && !params[:password].empty?
   		redirect '/home'
   	else
-  		redirect '/signup' #add error message
+  		erb :'users/signup', locals: {message:"error"}
   	end
   end
 
@@ -53,14 +52,14 @@ class ApplicationController < Sinatra::Base
   		session[:id] = @user[:id]
 		  redirect '/home'
 	  else
-		  redirect '/login' #add error message
+		  erb :'users/login', locals: {message:"error"}
 	  end
   end
 
   #Log Out
   get '/logout' do 
   	session.clear
-  	redirect '/login' #add logout success message
+  	erb :'users/login', locals: {message:"success"}
   end
 
   #Home Page - shows user lists
@@ -144,7 +143,7 @@ class ApplicationController < Sinatra::Base
   		@list.save
   		redirect "/lists/#{@list.id}"
   	else
-  		redirect "/lists/#{@list.id}/edit"
+  		erb :'lists/edit', locals: {message: "Successfully created song."}
   	end
   end
 

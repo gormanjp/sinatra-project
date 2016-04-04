@@ -9,7 +9,15 @@
 	 	<li><a href="/logout">Log Out  </a></li>
 	 </ul>
 </nav>
+
 <div class="container">
+<% unless locals.empty? %>
+  <div class="alert alert-danger">
+  <strong>Try Again!</strong> List name cannot be blank!
+</div>
+<% end %>
+
+
 	<form action="/lists/<%=@list.id%>/edit" method="POST">
 		<input id="hidden" type="hidden" name="_method" value="PATCH">
 		<input type="text" name="name" id="name" value="<%= @list.name %>">
