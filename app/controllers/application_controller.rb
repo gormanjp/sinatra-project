@@ -110,8 +110,8 @@ class ApplicationController < Sinatra::Base
 
   #Show List
   get '/lists/:id' do
-  	if Helpers.is_logged_in?(session)
-  		@list = List.find_by(:id => params[:id])
+    @list = List.find_by(:id => params[:id]) 
+  	if Helpers.is_logged_in?(session) && Helpers.user_match(@list,session)
   		 erb :'lists/show'
   	else
   		redirect '/login'
@@ -134,8 +134,8 @@ class ApplicationController < Sinatra::Base
 
   #Edit List
   get '/lists/:id/edit' do 
-  	if Helpers.is_logged_in?(session)
-  		@list = List.find_by(:id => params[:id])
+    @list = List.find_by(:id => params[:id])
+  	if Helpers.is_logged_in?(session) && Helpers.user_match(@list,session)
   		erb :'lists/edit'
   	else
   		redirect '/login'
@@ -143,32 +143,29 @@ class ApplicationController < Sinatra::Base
   end
 
   patch '/lists/:id/edit' do
-  	@list = List.find_by(:id => params[:id])
-    @user = User.find_by_id(session[:id])
-    redirect "/home" if @user.id != @list.user_id
-  	if params[:name] != ""
+    @list = List.find_by(:id => params[:id])
+  	if !params[:name].empty?
   		@list.name = params[:name]
   		@list.save
   		redirect "/lists/#{@list.id}"
   	else
-  		erb :'lists/edit'
+  		erb :'lists/edit', :locals => {:message => 'error'}
   	end
   end
 
   #Delete List
   delete '/lists/:id/delete' do 
-  	@user = User.find_by_id(session[:id])
   	@list = List.find_by(:id => params[:id])
-  	List.delete(params[:id]) if @user.id == @list.user_id
+    List.delete(params[:id])if Helpers.is_logged_in?(session) && Helpers.user_match(@list,session)
   	redirect '/home'
   end
 
 #ITEMS
   #new item
   get '/items/:id/new' do 
-   if Helpers.is_logged_in?(session)
+  @list = List.find_by(:id => params[:id])
+   if Helpers.is_logged_in?(session) && Helpers.user_match(@list,session)
       @user = User.find_by_id(session[:id])
-      @list = List.find_by(:id => params[:id])
       erb :'items/new', :locals => {:message => 'message'}
     else
       redirect '/login'
@@ -176,7 +173,7 @@ class ApplicationController < Sinatra::Base
   end
 
   post '/items/:id/new' do 
-    if params[:content] != "" && params[:frequency] != 0
+    if params[:content] != "" && !params[:frequency].empty?
       @list = List.find_by(:id => params[:id])
       @item = Item.create(:content => params[:content], :frequency => params[:frequency], :checks => 0)
       @list.items << @item

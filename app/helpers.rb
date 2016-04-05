@@ -8,4 +8,8 @@ class Helpers
   	!!self.current_user(user)
   end
 
+  def self.user_match(list,session)
+  	list.user_id == session[:id]
+  end
+
 end
